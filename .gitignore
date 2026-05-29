@@ -1,0 +1,27 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Ignore directory contents but not the directories themselves
+adhoc/*
+chapter*/*
+
+# Vagrant VM data and logs
+.vagrant/
+*VBoxHeadless*.log
+
+# Keep these specific files
+!adhoc/Vagrantfile
+!adhoc/inventory.ini
+!adhoc/ansible.cfg
+!chapter*/Vagrantfile
+!chapter*/inventory.ini
+!chapter*/ansible.cfg
+!chapter*/playbook.yml

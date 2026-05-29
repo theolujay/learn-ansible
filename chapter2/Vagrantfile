@@ -1,0 +1,17 @@
+# Vagrantfile for testing Ansible playbooks against a single VM
+# Video ref: 0:37:14 - Playbook Basics
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "bento/ubuntu-24.04"
+
+  # Ansible provisioner -- runs ansible-playbook automatically on `vagrant up` / `vagrant provision`
+  # No need to manually SSH in; Vagrant handles inventory and connection
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "playbook.yml"
+    # Explicitly tell Ansible which Python to use on the target VM
+    # Ubuntu 24.04 doesn't ship /usr/bin/python by default, only python3
+    ansible.extra_vars = {
+      ansible_python_interpreter: "/usr/bin/python3"
+    }
+  end
+end

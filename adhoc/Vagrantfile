@@ -1,0 +1,42 @@
+# Vagrant configuration for multi-VM setup (used for Ansible orchestration practice)
+# Video ref: 0:10:00 - Multi-VM Vagrant Setup
+Vagrant.configure("2") do |config|
+
+  # Base box -- bento boxes are well-maintained HashiCorp-published images
+  config.vm.box = "bento/ubuntu-24.04"
+
+  # Keep the default Vagrant insecure key for simpler local testing
+  # Normally Vagrant replaces the SSH key on first boot for security,
+  # but insert_key: false skips that so ansible_ssh_private_key_file works
+  config.ssh.insert_key = false
+
+  # Disable the default /vagrant synced folder to avoid performance issues
+  # (we don't need file sharing for ad-hoc command practice)
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+
+  config.vm.provider :virtualbox do |v|
+    v.memory = 512          # Lightweight -- 512MB is enough for testing
+    v.linked_clone = true   # Faster VM creation by linking to a base snapshot
+  end
+
+  # --- Define 3 VMs for orchestration practice ---
+
+  # App server 1
+  config.vm.define "app1" do |app|
+    app.vm.hostname = "orc-app1.test"
+    # Private network IP for host-only communication between VMs
+    app.vm.network :private_network, ip: "192.168.60.4"
+  end
+
+  # App server 2
+  config.vm.define "app2" do |app|
+    app.vm.hostname = "orc-app2.test"
+    app.vm.network :private_network, ip: "192.168.60.5"
+  end
+
+  # Database server
+  config.vm.define "db" do |app|
+    app.vm.hostname = "orc-db.test"
+    app.vm.network :private_network, ip: "192.168.60.6"
+  end
+end
