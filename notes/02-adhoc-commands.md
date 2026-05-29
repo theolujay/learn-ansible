@@ -119,6 +119,38 @@ ansible [target] -i [inventory] -m [module] -a "[arguments]"
 | Install package               | `ansible multi -i inventory -b -m yum -a "name=ntp state=present"` |
 | Start service                 | `ansible multi -i inventory -b -m service -a "name=ntpd state=started enabled=yes"` |
 
+## SSH & connectivity
+
+On first connection to new VMs, Ansible fails without `host_key_checking = False`:
+
+```
+ssh_askpass: exec(/usr/bin/ssh-askpass): No such file or directory
+Host key verification failed.
+```
+
+Fix in `ansible.cfg`:
+```ini
+[defaults]
+host_key_checking = False
+```
+
+Vagrant VMs use the insecure private key. Set it in the inventory:
+```ini
+[all:vars]
+ansible_user=vagrant
+ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
+```
+
+## /var/log/syslog vs /var/log/messages
+
+The tutorial uses CentOS where system logs live in `/var/log/messages`. Ubuntu uses `/var/log/syslog` instead. Running `tail /var/log/messages` on Ubuntu fails:
+
+```
+tail: cannot open '/var/log/messages' for reading: No such file or directory
+```
+
+Always check the OS before hardcoding log paths.
+
 ## Targeting
 
 | Target | Runs on                        |
