@@ -2,20 +2,20 @@
 # Video ref: 0:37:14 (Playbooks), 0:53:11 (Idempotency)
 
 ---
-- name: Configure NTP with chrony              # Play name (descriptive)
-  hosts: all                                    # Target group (all hosts in inventory)
-  become: true                                  # Run tasks with sudo (elevated privileges)
+- name: Configure NTP with chrony # Play name (descriptive)
+  hosts: all # Target group (all hosts in inventory)
+  become: true # Run tasks with sudo (elevated privileges)
 
   tasks:
     # Idempotent: only installs if not already present; reports "ok" if nothing changed
     - name: Ensure chrony is installed.
-      apt:                                      # Use official module (not raw shell) for idempotency
+      ansible.builtin.apt: # Use official module (not raw shell) for idempotency
         name: chrony
         state: present
-        update_cache: yes                       # Runs apt-get update before installing
+        update_cache: true # Runs apt-get update before installing
 
     - name: Ensure chrony is running.
-      service:                                  # Module manages systemd services declaratively
+      ansible.builtin.service: # Module manages systemd services declaratively
         name: chrony
         state: started
-        enabled: yes                            # Auto-start on boot
+        enabled: true # Auto-start on boot
