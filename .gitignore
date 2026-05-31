@@ -17,6 +17,10 @@ chapter*/*
 .vagrant/
 *VBoxHeadless*.log
 
+# Ansible fact cache artifacts (created by Vagrant's provisioner)
+nodejs/{cache_update_time:*
+nodejs/default:
+
 # Keep these specific files
 !adhoc/Vagrantfile
 !adhoc/inventory.ini

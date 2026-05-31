@@ -1,0 +1,24 @@
+---
+- name: Ensure UFW is disabled (test server — no firewall needed)
+  ansible.builtin.service:
+    name: ufw
+    state: stopped
+  register: nodejs_ufw_status
+  failed_when: >
+    nodejs_ufw_status.failed and "find service" not in nodejs_ufw_status.msg
+
+- name: Install Node.js
+  ansible.builtin.apt:
+    name: nodejs
+    state: present
+
+- name: Install npm
+  ansible.builtin.apt:
+    name: npm
+    state: present
+
+- name: Install Forever (to run the Node.js app)
+  community.general.npm:
+    name: forever
+    global: true
+    state: present

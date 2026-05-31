@@ -1,0 +1,40 @@
+---
+- name: Setup Node.js App
+  hosts: all
+  become: true
+  vars:
+    node_apps_location: /usr/local/opt/node
+  roles:
+    - nodejs
+  tasks:
+    - name: Ensure Node.js app folder exists
+      ansible.builtin.file:
+        path: "{{ node_apps_location }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Copy example Node.js app to server
+      ansible.builtin.copy:
+        src: app
+        dest: "{{ node_apps_location }}"
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Install app dependencies defined in package.json
+      community.general.npm:
+        path: "{{ node_apps_location }}/app"
+
+    - name: Check list of running Node.js apps
+      ansible.builtin.command: forever list
+      register: forever_list
+      changed_when: false # read-only check — never show as "changed"
+
+    - name: Start example Node.js app
+      ansible.builtin.command: "forever start {{ node_apps_location }}/app/app.js"
+      # only run if Ansible doesn't find app.js running in forever_list
+      when: "forever_list.stdout.find(node_apps_location + '/app/app.js') == -1"
+      # mark "changed" only when the app was actually started
+      changed_when: "forever_list.stdout.find(node_apps_location + '/app/app.js') == -1"

@@ -1,0 +1,30 @@
+# Pin the Vagrant API version (modern alternative: Vagrant.configure("2"))
+VAGRANTFILE_API_VERSION = "2"
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    # Base box — bento boxes are well-maintained Ubuntu images
+    config.vm.box = "bento/ubuntu-24.04"
+
+    # Hostname inside the VM
+    config.vm.hostname = "nodejs.test"
+
+    # Host-only network with static IP — reachable from host at this address
+    config.vm.network :private_network, ip: "192.168.56.55"
+
+    # Use Vagrant's default insecure key instead of generating a new one
+    config.ssh.insert_key = false
+
+    # Disable the default /vagrant synced folder (avoids Guest Additions issues)
+    config.vm.synced_folder ".", "/vagrant", disabled: true
+
+    config.vm.provider :virtualbox do |v|
+        v.memory = 512
+        # v.cpus = 2
+    end
+
+    # Refresh apt cache — bento boxes ship with a stale snapshot
+    config.vm.provision "shell", inline: "apt-get update -y"
+    # Run Ansible after boot — Vagrant auto-generates the inventory
+    config.vm.provision :ansible do |ansible|
+        ansible.playbook = "main.yml"
+    end
+end

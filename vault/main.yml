@@ -1,0 +1,19 @@
+---
+- name: Explore Ansible Vault
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - vars/api_key.yml
+
+  tasks:
+    - name: Echo the API key which was injected into theenv
+      ansible.builtin.shell: echo $API_KEY
+      changed_when: false
+      environment:
+        API_KEY: "{{ myapp_api_key }}"
+      register: echo_result
+
+    - name: Show the result
+      ansible.builtin.debug:
+        vars: echo_result.stdout
