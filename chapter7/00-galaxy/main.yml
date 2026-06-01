@@ -1,0 +1,11 @@
+---
+- name: Install macOS command line tools and Homebrew packages
+  hosts: localhost
+  connection: local
+  vars:
+    homebrew_installed_packages:
+      - pv
+  roles:
+    - elliotweiser.osx-command-line-tools
+    - role: geerlingguy.homebrew
+      become: true
