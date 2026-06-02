@@ -114,15 +114,12 @@ app.vm.hostname = "orc-app2.test"
 
 ### .gitignore negation order
 
-Negation patterns (`!`) must appear **after** the patterns they negate. Also, you cannot un-ignore a file inside an ignored directory — use `adhoc/*` instead of `adhoc/`:
-```gitignore
-# Wrong — negation before directory pattern
-!**/inventory.ini
-adhoc/
-
-# Right — negate contents, not directory
-adhoc/*
-!adhoc/inventory.ini
-!adhoc/Vagrantfile
-!adhoc/ansible.cfg
+Negation patterns (`!`) must appear **after** the patterns they negate. Also, you cannot un-ignore a file inside an ignored directory — use `02-adhoc-commands/*` instead of `02-adhoc-commands/`:
+...
+02-adhoc-commands/
+...
+02-adhoc-commands/*
+!02-adhoc-commands/inventory.ini
+!02-adhoc-commands/Vagrantfile
+!02-adhoc-commands/ansible.cfg
 ```
